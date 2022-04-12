@@ -10,14 +10,16 @@ class SeriesController extends Controller
 {
     public function index(Request $request)
     {
-        $series = [
-            'lost',
-            'house',
-            'The Walking Dead'
-        ];
-        
+        $series = Serie::query()
+            ->orderBy('nome')
+            ->get();
+
+        $mensagem = $request
+            ->session()
+            ->get('mensagem');
+
         //retorna a view com o html + o que a view deve observar 
-        return view('series.index', ['series' => $series]);
+        return view('series.index', compact('series', 'mensagem'));
     }
 
 
@@ -27,11 +29,26 @@ class SeriesController extends Controller
         return view('series.create');
     }
 
-    public function store(Request $request)
+    public function store(SeriesFormRequest $request)
     {
-        $nome = $request->nome;
-        $serie = new Serie();
-        $serie->nome =$nome;
-        var_dump($serie->save());
+        $serie = Serie::create($request->all());
+        $request->session()
+        ->flash(
+            'mensagem', 
+            "Serie {$serie->id} criada com sucesso {$serie->nome}");
+        
+        return redirect()-> route('listar_series');
+    }
+
+    public function destroy(Request $request)
+    {
+        Serie::destroy($request->id);
+         $request->session()
+        ->flash(
+            'mensagem', 
+            "Serie removida com sucesso");
+        
+        return redirect()-> route('listar_series');
+
     }
 } 
