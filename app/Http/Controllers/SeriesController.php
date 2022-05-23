@@ -6,12 +6,19 @@ use App\Http\Requests\SeriesFormRequest;
 use App\Serie;
 use App\Services\CriadorDeSerie;
 use App\Services\RemovedorDeSerie;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SeriesController extends Controller
 {
     public function index(Request $request)
     {
+        if(!Auth::check())
+        {
+            echo "Não autenticado";
+            exit();
+        }
+        
         $series = Serie::query()
             ->orderBy('nome')
             ->get();
@@ -54,7 +61,7 @@ class SeriesController extends Controller
         $nomeSerie = $removedorDeSerie->removerSerie($request->id);
         
         Serie::destroy($request->id);
-         $request->session()
+        $request->session()
         ->flash( 
             'mensagem', 
             "Serie $nomeSerie removida com sucesso"

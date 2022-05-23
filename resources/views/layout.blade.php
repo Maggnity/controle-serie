@@ -11,6 +11,15 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light m-2 d-flex justify-content-between">
+        <a href="{{ route('listar_series')}}" class="navbar-brand">Home</a>
+        @auth
+        <a href="/sair" class="text-danger">Sair</a>
+        @endauth
+        @guest
+        <a href="/entrar"></a>
+        @endguest
+    </nav>
     <div class="container">
         <div class="jumbotron">
             <h1>@yield('cabecalho')</h1>
